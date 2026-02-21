@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Library API — Documentation</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<button class="menu-btn" id="menuBtn" onclick="toggleSidebar()">☰</button>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="logo-area">
+    <div class="logo-title">📚 Library API</div>
+    <div class="logo-sub">v1.0.0 · REST · JSON</div>
+  </div>
+
+  <div class="sidebar-section">Overview</div>
+  <a class="sidebar-link active" onclick="scrollSection('overview')">Introduction</a>
+  <a class="sidebar-link" onclick="scrollSection('auth')">Authentication</a>
+  <a class="sidebar-link" onclick="scrollSection('errors')">Errors & Codes</a>
+  <a class="sidebar-link" onclick="scrollSection('pagination')">Pagination</a>
+
+  <div class="sidebar-section">Books</div>
+  <a class="sidebar-link" onclick="scrollSection('books-list')"><span class="method-badge GET">GET</span> List books</a>
+  <a class="sidebar-link" onclick="scrollSection('books-get')"><span class="method-badge GET">GET</span> Get book</a>
+  <a class="sidebar-link" onclick="scrollSection('books-create')"><span class="method-badge POST">POST</span> Create book</a>
+  <a class="sidebar-link" onclick="scrollSection('books-update')"><span class="method-badge PUT">PUT</span> Update book</a>
+  <a class="sidebar-link" onclick="scrollSection('books-delete')"><span class="method-badge DELETE">DEL</span> Delete book</a>
+
+  <div class="sidebar-section">Members</div>
+  <a class="sidebar-link" onclick="scrollSection('members-list')"><span class="method-badge GET">GET</span> List members</a>
+  <a class="sidebar-link" onclick="scrollSection('members-get')"><span class="method-badge GET">GET</span> Get member</a>
+  <a class="sidebar-link" onclick="scrollSection('members-create')"><span class="method-badge POST">POST</span> Create member</a>
+  <a class="sidebar-link" onclick="scrollSection('members-update')"><span class="method-badge PUT">PUT</span> Update member</a>
+  <a class="sidebar-link" onclick="scrollSection('members-delete')"><span class="method-badge DELETE">DEL</span> Delete member</a>
+
+  <div class="sidebar-section">Loans</div>
+  <a class="sidebar-link" onclick="scrollSection('loans-list')"><span class="method-badge GET">GET</span> List loans</a>
+  <a class="sidebar-link" onclick="scrollSection('loans-get')"><span class="method-badge GET">GET</span> Get loan</a>
+  <a class="sidebar-link" onclick="scrollSection('loans-create')"><span class="method-badge POST">POST</span> Checkout book</a>
+  <a class="sidebar-link" onclick="scrollSection('loans-return')"><span class="method-badge PATCH">PATCH</span> Return book</a>
+  <a class="sidebar-link" onclick="scrollSection('loans-delete')"><span class="method-badge DELETE">DEL</span> Delete loan</a>
+
+  <div class="sidebar-section">Utilities</div>
+  <a class="sidebar-link" onclick="scrollSection('search')"><span class="method-badge GET">GET</span> Search</a>
+  <a class="sidebar-link" onclick="scrollSection('stats')"><span class="method-badge GET">GET</span> Stats</a>
+  <a class="sidebar-link" onclick="scrollSection('health')"><span class="method-badge GET">GET</span> Health</a>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HERO -->
+  <div class="api-hero" id="overview">
+    <h1>Library <span>Management</span> API</h1>
+    <p>A fully RESTful API for managing a library system — books, members, loans, and inventory. All responses are JSON. CRUD operations available on all resources.</p>
+    <div class="base-url">
+      <span class="label">Base URL</span>
+      <span class="url">http://localhost:5000/api/v1</span>
+    </div>
+  </div>
+
+  <!-- AUTH -->
+  <div id="auth">
+    <div class="section-head"><h2>Authentication</h2><span class="section-tag">Info</span></div>
+    <div class="info-box tip">
+      <strong>Development Mode:</strong> This API currently runs without authentication for local development. For production, add JWT bearer tokens by including <code>Authorization: Bearer &lt;token&gt;</code> in every request header.
+    </div>
+  </div>
+
+  <!-- ERRORS -->
+  <div id="errors">
+    <div class="section-head"><h2>Error Codes</h2><span class="section-tag">Reference</span></div>
+    <p style="color:var(--muted);font-size:0.82rem;margin-bottom:1rem">All errors return a consistent JSON envelope with a <code style="color:var(--accent)">success: false</code> flag and an error object.</p>
+    <div class="err-grid">
+      <div class="err-item"><code>BOOK_NOT_FOUND</code><p>Book ID doesn't exist (404)</p></div>
+      <div class="err-item"><code>MEMBER_NOT_FOUND</code><p>Member ID doesn't exist (404)</p></div>
+      <div class="err-item"><code>LOAN_NOT_FOUND</code><p>Loan ID doesn't exist (404)</p></div>
+      <div class="err-item"><code>DUPLICATE_ISBN</code><p>ISBN already registered (409)</p></div>
+      <div class="err-item"><code>DUPLICATE_EMAIL</code><p>Email already registered (409)</p></div>
+      <div class="err-item"><code>MISSING_FIELDS</code><p>Required fields absent (400)</p></div>
+      <div class="err-item"><code>NO_COPIES_AVAILABLE</code><p>All copies checked out (409)</p></div>
+      <div class="err-item"><code>LOAN_LIMIT_REACHED</code><p>Member at max loans (409)</p></div>
+      <div class="err-item"><code>BOOK_ON_LOAN</code><p>Can't delete active loan (409)</p></div>
+      <div class="err-item"><code>ALREADY_RETURNED</code><p>Book already returned (409)</p></div>
+      <div class="err-item"><code>INVALID_EMAIL</code><p>Bad email format (400)</p></div>
+      <div class="err-item"><code>MEMBER_HAS_LOANS</code><p>Active loans block delete (409)</p></div>
+    </div>
+  </div>
+
+  <!-- PAGINATION -->
+  <div id="pagination">
+    <div class="section-head"><h2>Pagination</h2><span class="section-tag">Info</span></div>
+    <div class="info-box tip">
+      All list endpoints support <code>?page=1&per_page=10</code>. Max <code>per_page</code> is 50. Response includes a <code>meta</code> object with <code>total</code>, <code>pages</code>, <code>page</code>, and <code>per_page</code>.
+    </div>
+  </div>
+
+  <!-- ═══════════ BOOKS ═══════════ -->
+  <div class="section-head"><h2>Books</h2><span class="section-tag">Resource</span></div>
+
+  <!-- List Books -->
+  <div class="endpoint" id="books-list">
+    <div class="endpoint-header" onclick="toggle(this)">
+      <span class="method-pill GET">GET</span>
+      <span class="endpoint-path">/books</span>
+      <span class="endpoint-summary">List all books</span>
+      <span class="chevron">▶</span>
+    </div>
+    <div class="endpoint-body">
+      <div class="endpoint-inner">
+        <p class="endpoint-desc">Returns a paginated list of all books. Filter by genre, author, or availability.</p>
+        <div class="params-title">Query Parameters</div>
+        <table>
+          <tr><th>Param</th><th>Type</th><th>Description</th><th>Required</th></tr>
+          <tr><td><code>page</code></td><td>integer</td><td>Page number (default: 1)</td><td><span class="opt-badge">optional</span></td></tr>
+          <tr><td><code>per_page</code></td><td>integer</td><td>Results per page, max 50 (default: 10)</td><td><span class="opt-badge">optional</span></td></tr>
+          <tr><td><code>genre</code></td><td>string</td><td>Filter by genre (partial match)</td><td><span class="opt-badge">optional</span></td></tr>
+          <tr><td><code>author</code></td><td>string</td><td>Filter by author name</td><td><span class="opt-badge">optional</span></td></tr>
+          <tr><td><code>available</code></td><td>boolean</td><td>Only return books with copies available</td><td><span class="opt-badge">optional</span></td></tr>
+        </table>
+        <div class="code-tabs">
+          <div class="code-tab active" onclick="switchTab(this,'req-bl')">Request</div>
+          <div class="code-tab" onclick="switchTab(this,'res-bl')">Response 200</div>
+        </div>
+        <div id="req-bl" class="code-panel active"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button><span style="color:var(--get)">GET</span> /api/v1/books?available=true&genre=fiction&page=1</pre></div>
+        <div id="res-bl" class="code-panel"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"data"</span>: [
+    {
+      <span class="json-key">"id"</span>: <span class="json-str">"b001"</span>,
+      <span class="json-key">"isbn"</span>: <span class="json-str">"978-0-06-112008-4"</span>,
+      <span class="json-key">"title"</span>: <span class="json-str">"To Kill a Mockingbird"</span>,
+      <span class="json-key">"author"</span>: <span class="json-str">"Harper Lee"</span>,
+      <span class="json-key">"genre"</span>: <span class="json-str">"Fiction"</span>,
+      <span class="json-key">"year"</span>: <span class="json-num">1960</span>,
+      <span class="json-key">"copies_total"</span>: <span class="json-num">5</span>,
+      <span class="json-key">"copies_available"</span>: <span class="json-num">3</span>,
+      <span class="json-key">"created_at"</span>: <span class="json-str">"2024-01-10T08:00:00Z"</span>,
+      <span class="json-key">"updated_at"</span>: <span class="json-str">"2024-01-10T08:00:00Z"</span>
+    }
+  ],
+  <span class="json-key">"meta"</span>: {
+    <span class="json-key">"page"</span>: <span class="json-num">1</span>, <span class="json-key">"per_page"</span>: <span class="json-num">10</span>,
+    <span class="json-key">"total"</span>: <span class="json-num">3</span>, <span class="json-key">"pages"</span>: <span class="json-num">1</span>
+  }
+}</pre></div>
+        <div class="responses">
+          <div class="resp-row"><span class="resp-code s2">200</span><span class="resp-desc">Paginated list of books</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Get Book -->
+  <div class="endpoint" id="books-get">
+    <div class="endpoint-header" onclick="toggle(this)">
+      <span class="method-pill GET">GET</span>
+      <span class="endpoint-path">/books/<span class="param">{id}</span></span>
+      <span class="endpoint-summary">Get single book</span>
+      <span class="chevron">▶</span>
+    </div>
+    <div class="endpoint-body"><div class="endpoint-inner">
+      <p class="endpoint-desc">Returns a single book by its ID.</p>
+      <div class="code-tabs">
+        <div class="code-tab active" onclick="switchTab(this,'req-bg')">Request</div>
+        <div class="code-tab" onclick="switchTab(this,'res-bg')">Response 200</div>
+      </div>
+      <div id="req-bg" class="code-panel active"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button><span style="color:var(--get)">GET</span> /api/v1/books/b001</pre></div>
+      <div id="res-bg" class="code-panel"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button>{ <span class="json-key">"success"</span>: <span class="json-bool">true</span>, <span class="json-key">"data"</span>: { <span class="json-key">"id"</span>: <span class="json-str">"b001"</span>, <span class="json-key">"title"</span>: <span class="json-str">"To Kill a Mockingbird"</span>, ... } }</pre></div>
+      <div class="responses">
+        <div class="resp-row"><span class="resp-code s2">200</span><span class="resp-desc">Book object</span></div>
+        <div class="resp-row"><span class="resp-code s4">404</span><span class="resp-desc">BOOK_NOT_FOUND</span></div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- Create Book -->
+  <div class="endpoint" id="books-create">
+    <div class="endpoint-header" onclick="toggle(this)">
+      <span class="method-pill POST">POST</span>
+      <span class="endpoint-path">/books</span>
+      <span class="endpoint-summary">Create a new book</span>
+      <span class="chevron">▶</span>
+    </div>
+    <div class="endpoint-body"><div class="endpoint-inner">
+      <p class="endpoint-desc">Adds a new book to the library. ISBN must be unique.</p>
+      <div class="params-title">Request Body (JSON)</div>
+      <table>
+        <tr><th>Field</th><th>Type</th><th>Description</th><th>Required</th></tr>
+        <tr><td><code>title</code></td><td>string</td><td>Book title</td><td><span class="req-badge">required</span></td></tr>
+        <tr><td><code>author</code></td><td>string</td><td>Author name</td><td><span class="req-badge">required</span></td></tr>
+        <tr><td><code>isbn</code></td><td>string</td><td>ISBN-13 (must be unique)</td><td><span class="req-badge">required</span></td></tr>
+        <tr><td><code>genre</code></td><td>string</td><td>Genre category (default: Uncategorized)</td><td><span class="opt-badge">optional</span></td></tr>
+        <tr><td><code>year</code></td><td>integer</td><td>Publication year</td><td><span class="opt-badge">optional</span></td></tr>
+        <tr><td><code>copies_total</code></td><td>integer</td><td>Number of copies (default: 1)</td><td><span class="opt-badge">optional</span></td></tr>
+      </table>
+      <div class="code-tabs">
+        <div class="code-tab active" onclick="switchTab(this,'req-bc')">Request</div>
+        <div class="code-tab" onclick="switchTab(this,'res-bc')">Response 201</div>
+      </div>
+      <div id="req-bc" class="code-panel active"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button><span style="color:var(--post)">POST</span> /api/v1/books
+Content-Type: application/json
+
+{
+  <span class="json-key">"title"</span>: <span class="json-str">"Clean Code"</span>,
+  <span class="json-key">"author"</span>: <span class="json-str">"Robert C. Martin"</span>,
+  <span class="json-key">"isbn"</span>: <span class="json-str">"978-0-13-235088-4"</span>,
+  <span class="json-key">"genre"</span>: <span class="json-str">"Technology"</span>,
+  <span class="json-key">"year"</span>: <span class="json-num">2008</span>,
+  <span class="json-key">"copies_total"</span>: <span class="json-num">4</span>
+}</pre></div>
+      <div id="res-bc" class="code-panel"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"id"</span>: <span class="json-str">"b8f3a1d2"</span>,
+    <span class="json-key">"isbn"</span>: <span class="json-str">"978-0-13-235088-4"</span>,
+    <span class="json-key">"title"</span>: <span class="json-str">"Clean Code"</span>,
+    <span class="json-key">"copies_total"</span>: <span class="json-num">4</span>,
+    <span class="json-key">"copies_available"</span>: <span class="json-num">4</span>,
+    <span class="json-key">"created_at"</span>: <span class="json-str">"2026-02-20T15:00:00Z"</span>
+  }
+}</pre></div>
+      <div class="responses">
+        <div class="resp-row"><span class="resp-code s2">201</span><span class="resp-desc">Book created</span></div>
+        <div class="resp-row"><span class="resp-code s4">400</span><span class="resp-desc">MISSING_FIELDS</span></div>
+        <div class="resp-row"><span class="resp-code s4">409</span><span class="resp-desc">DUPLICATE_ISBN</span></div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- Update Book -->
+  <div class="endpoint" id="books-update">
+    <div class="endpoint-header" onclick="toggle(this)">
+      <span class="method-pill PUT">PUT</span>
+      <span class="endpoint-path">/books/<span class="param">{id}</span></span>
+      <span class="endpoint-summary">Update a book</span>
+      <span class="chevron">▶</span>
+    </div>
+    <div class="endpoint-body"><div class="endpoint-inner">
+      <p class="endpoint-desc">Update any fields on a book. Only include fields you want to change. Adjusting <code>copies_total</code> will recalculate <code>copies_available</code> automatically.</p>
+      <div class="code-tabs">
+        <div class="code-tab active" onclick="switchTab(this,'req-bu')">Request</div>
+        <div class="code-tab" onclick="switchTab(this,'res-bu')">Response 200</div>
+      </div>
+      <div id="req-bu" class="code-panel active"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button><span style="color:var(--put)">PUT</span> /api/v1/books/b001
+Content-Type: application/json
+
+{ <span class="json-key">"copies_total"</span>: <span class="json-num">8</span>, <span class="json-key">"genre"</span>: <span class="json-str">"American Literature"</span> }</pre></div>
+      <div id="res-bu" class="code-panel"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button">{ <span class="json-key">"success"</span>: <span class="json-bool">true</span>, <span class="json-key">"data"</span>: { <span class="json-key">"id"</span>: <span class="json-str">"b001"</span>, <span class="json-key">"copies_total"</span>: <span class="json-num">8</span>, <span class="json-key">"copies_available"</span>: <span class="json-num">6</span>, ... } }</pre></div>
+      <div class="responses">
+        <div class="resp-row"><span class="resp-code s2">200</span><span class="resp-desc">Updated book object</span></div>
+        <div class="resp-row"><span class="resp-code s4">404</span><span class="resp-desc">BOOK_NOT_FOUND</span></div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- Delete Book -->
+  <div class="endpoint" id="books-delete">
+    <div class="endpoint-header" onclick="toggle(this)">
+      <span class="method-pill DELETE">DEL</span>
+      <span class="endpoint-path">/books/<span class="param">{id}</span></span>
+      <span class="endpoint-summary">Delete a book</span>
+      <span class="chevron">▶</span>
+    </div>
+    <div class="endpoint-body"><div class="endpoint-inner">
+      <p class="endpoint-desc">Permanently deletes a book. Will fail if any active loans exist for this book.</p>
+      <div class="info-box warn"><strong>Warning:</strong> All copies must be returned before deleting a book.</div>
+      <div class="code-tabs">
+        <div class="code-tab active" onclick="switchTab(this,'req-bd')">Request</div>
+        <div class="code-tab" onclick="switchTab(this,'res-bd')">Response 200</div>
+      </div>
+      <div id="req-bd" class="code-panel active"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button><span style="color:var(--delete)">DELETE</span> /api/v1/books/b003</pre></div>
+      <div id="res-bd" class="code-panel"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button>{ <span class="json-key">"success"</span>: <span class="json-bool">true</span>, <span class="json-key">"data"</span>: { <span class="json-key">"id"</span>: <span class="json-str">"b003"</span>, <span class="json-key">"deleted"</span>: <span class="json-bool">true</span> } }</pre></div>
+      <div class="responses">
+        <div class="resp-row"><span class="resp-code s2">200</span><span class="resp-desc">Deletion confirmed</span></div>
+        <div class="resp-row"><span class="resp-code s4">404</span><span class="resp-desc">BOOK_NOT_FOUND</span></div>
+        <div class="resp-row"><span class="resp-code s4">409</span><span class="resp-desc">BOOK_ON_LOAN</span></div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- ═══════════ MEMBERS ═══════════ -->
+  <div class="section-head"><h2>Members</h2><span class="section-tag">Resource</span></div>
+
+  <div class="endpoint" id="members-list">
+    <div class="endpoint-header" onclick="toggle(this)">
+      <span class="method-pill GET">GET</span>
+      <span class="endpoint-path">/members</span>
+      <span class="endpoint-summary">List all members</span>
+      <span class="chevron">▶</span>
+    </div>
+    <div class="endpoint-body"><div class="endpoint-inner">
+      <p class="endpoint-desc">Returns a paginated list of library members. Filter by membership type.</p>
+      <div class="code-tabs">
+        <div class="code-tab active" onclick="switchTab(this,'req-ml')">Request</div>
+        <div class="code-tab" onclick="switchTab(this,'res-ml')">Response 200</div>
+      </div>
+      <div id="req-ml" class="code-panel active"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button><span style="color:var(--get)">GET</span> /api/v1/members?membership_type=premium</pre></div>
+      <div id="res-ml" class="code-panel"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button">{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"data"</span>: [{
+    <span class="json-key">"id"</span>: <span class="json-str">"m001"</span>, <span class="json-key">"name"</span>: <span class="json-str">"Alice Johnson"</span>,
+    <span class="json-key">"email"</span>: <span class="json-str">"alice@example.com"</span>,
+    <span class="json-key">"membership_type"</span>: <span class="json-str">"premium"</span>,
+    <span class="json-key">"active_loans"</span>: <span class="json-num">1</span>, <span class="json-key">"max_loans"</span>: <span class="json-num">10</span>
+  }]
+}</pre></div>
+      <div class="responses"><div class="resp-row"><span class="resp-code s2">200</span><span class="resp-desc">Member list with pagination</span></div></div>
+    </div></div>
+  </div>
+
+  <div class="endpoint" id="members-get">
+    <div class="endpoint-header" onclick="toggle(this)"><span class="method-pill GET">GET</span><span class="endpoint-path">/members/<span class="param">{id}</span></span><span class="endpoint-summary">Get single member</span><span class="chevron">▶</span></div>
+    <div class="endpoint-body"><div class="endpoint-inner">
+      <p class="endpoint-desc">Retrieve a specific member and their loan status.</p>
+      <div class="responses"><div class="resp-row"><span class="resp-code s2">200</span><span class="resp-desc">Member object</span></div><div class="resp-row"><span class="resp-code s4">404</span><span class="resp-desc">MEMBER_NOT_FOUND</span></div></div>
+    </div></div>
+  </div>
+
+  <div class="endpoint" id="members-create">
+    <div class="endpoint-header" onclick="toggle(this)"><span class="method-pill POST">POST</span><span class="endpoint-path">/members</span><span class="endpoint-summary">Create a member</span><span class="chevron">▶</span></div>
+    <div class="endpoint-body"><div class="endpoint-inner">
+      <p class="endpoint-desc">Register a new library member. Email must be unique. Premium members get a higher loan limit (10 vs 5).</p>
+      <div class="params-title">Request Body</div>
+      <table>
+        <tr><th>Field</th><th>Type</th><th>Description</th><th>Required</th></tr>
+        <tr><td><code>name</code></td><td>string</td><td>Full name</td><td><span class="req-badge">required</span></td></tr>
+        <tr><td><code>email</code></td><td>string</td><td>Email address (unique)</td><td><span class="req-badge">required</span></td></tr>
+        <tr><td><code>phone</code></td><td>string</td><td>Phone number</td><td><span class="opt-badge">optional</span></td></tr>
+        <tr><td><code>membership_type</code></td><td>enum</td><td><code>standard</code> | <code>premium</code></td><td><span class="opt-badge">optional</span></td></tr>
+      </table>
+      <div class="code-tabs">
+        <div class="code-tab active" onclick="switchTab(this,'req-mc')">Request</div>
+        <div class="code-tab" onclick="switchTab(this,'res-mc')">Response 201</div>
+      </div>
+      <div id="req-mc" class="code-panel active"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button><span style="color:var(--post)">POST</span> /api/v1/members
+{ <span class="json-key">"name"</span>: <span class="json-str">"Carol White"</span>, <span class="json-key">"email"</span>: <span class="json-str">"carol@example.com"</span>, <span class="json-key">"membership_type"</span>: <span class="json-str">"premium"</span> }</pre></div>
+      <div id="res-mc" class="code-panel"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button">{ <span class="json-key">"success"</span>: <span class="json-bool">true</span>, <span class="json-key">"data"</span>: { <span class="json-key">"id"</span>: <span class="json-str">"m7f2a3c1"</span>, <span class="json-key">"max_loans"</span>: <span class="json-num">10</span>, ... } }</pre></div>
+      <div class="responses">
+        <div class="resp-row"><span class="resp-code s2">201</span><span class="resp-desc">Member created</span></div>
+        <div class="resp-row"><span class="resp-code s4">400</span><span class="resp-desc">MISSING_FIELDS / INVALID_EMAIL</span></div>
+        <div class="resp-row"><span class="resp-code s4">409</span><span class="resp-desc">DUPLICATE_EMAIL</span></div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="endpoint" id="members-update">
+    <div class="endpoint-header" onclick="toggle(this)"><span class="method-pill PUT">PUT</span><span class="endpoint-path">/members/<span class="param">{id}</span></span><span class="endpoint-summary">Update a member</span><span class="chevron">▶</span></div>
+    <div class="endpoint-body"><div class="endpoint-inner">
+      <p class="endpoint-desc">Update member details. Only include fields to change.</p>
+      <div class="responses">
+        <div class="resp-row"><span class="resp-code s2">200</span><span class="resp-desc">Updated member</span></div>
+        <div class="resp-row"><span class="resp-code s4">404</span><span class="resp-desc">MEMBER_NOT_FOUND</span></div>
+        <div class="resp-row"><span class="resp-code s4">409</span><span class="resp-desc">DUPLICATE_EMAIL</span></div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="endpoint" id="members-delete">
+    <div class="endpoint-header" onclick="toggle(this)"><span class="method-pill DELETE">DEL</span><span class="endpoint-path">/members/<span class="param">{id}</span></span><span class="endpoint-summary">Delete a member</span><span class="chevron">▶</span></div>
+    <div class="endpoint-body"><div class="endpoint-inner">
+      <p class="endpoint-desc">Permanently remove a member. Fails if member has active loans.</p>
+      <div class="responses">
+        <div class="resp-row"><span class="resp-code s2">200</span><span class="resp-desc">Deletion confirmed</span></div>
+        <div class="resp-row"><span class="resp-code s4">409</span><span class="resp-desc">MEMBER_HAS_LOANS</span></div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- ═══════════ LOANS ═══════════ -->
+  <div class="section-head"><h2>Loans</h2><span class="section-tag">Resource</span></div>
+
+  <div class="endpoint" id="loans-list">
+    <div class="endpoint-header" onclick="toggle(this)"><span class="method-pill GET">GET</span><span class="endpoint-path">/loans</span><span class="endpoint-summary">List all loans</span><span class="chevron">▶</span></div>
+    <div class="endpoint-body"><div class="endpoint-inner">
+      <p class="endpoint-desc">Returns all loans. Filter by status, member_id, or book_id.</p>
+      <div class="code-tabs">
+        <div class="code-tab active" onclick="switchTab(this,'req-ll')">Request</div>
+        <div class="code-tab" onclick="switchTab(this,'res-ll')">Response 200</div>
+      </div>
+      <div id="req-ll" class="code-panel active"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button><span style="color:var(--get)">GET</span> /api/v1/loans?status=active&member_id=m001</pre></div>
+      <div id="res-ll" class="code-panel"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button">{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"data"</span>: [{
+    <span class="json-key">"id"</span>: <span class="json-str">"l001"</span>,
+    <span class="json-key">"book_id"</span>: <span class="json-str">"b001"</span>,
+    <span class="json-key">"member_id"</span>: <span class="json-str">"m001"</span>,
+    <span class="json-key">"loaned_at"</span>: <span class="json-str">"2024-01-15T10:00:00Z"</span>,
+    <span class="json-key">"due_at"</span>: <span class="json-str">"2024-02-15T10:00:00Z"</span>,
+    <span class="json-key">"returned_at"</span>: <span class="json-null">null</span>,
+    <span class="json-key">"status"</span>: <span class="json-str">"active"</span>
+  }]
+}</pre></div>
+      <div class="responses"><div class="resp-row"><span class="resp-code s2">200</span><span class="resp-desc">Loan list with pagination</span></div></div>
+    </div></div>
+  </div>
+
+  <div class="endpoint" id="loans-get">
+    <div class="endpoint-header" onclick="toggle(this)"><span class="method-pill GET">GET</span><span class="endpoint-path">/loans/<span class="param">{id}</span></span><span class="endpoint-summary">Get single loan</span><span class="chevron">▶</span></div>
+    <div class="endpoint-body"><div class="endpoint-inner">
+      <p class="endpoint-desc">Get details of a specific loan transaction.</p>
+      <div class="responses"><div class="resp-row"><span class="resp-code s2">200</span><span class="resp-desc">Loan object</span></div><div class="resp-row"><span class="resp-code s4">404</span><span class="resp-desc">LOAN_NOT_FOUND</span></div></div>
+    </div></div>
+  </div>
+
+  <div class="endpoint" id="loans-create">
+    <div class="endpoint-header" onclick="toggle(this)"><span class="method-pill POST">POST</span><span class="endpoint-path">/loans</span><span class="endpoint-summary">Checkout a book</span><span class="chevron">▶</span></div>
+    <div class="endpoint-body"><div class="endpoint-inner">
+      <p class="endpoint-desc">Check out a book to a member. Automatically decrements available copies and increments member's active loan count. Validates loan limits and availability.</p>
+      <div class="params-title">Request Body</div>
+      <table>
+        <tr><th>Field</th><th>Type</th><th>Description</th><th>Required</th></tr>
+        <tr><td><code>book_id</code></td><td>string</td><td>ID of the book to loan</td><td><span class="req-badge">required</span></td></tr>
+        <tr><td><code>member_id</code></td><td>string</td><td>ID of the member borrowing</td><td><span class="req-badge">required</span></td></tr>
+        <tr><td><code>loan_days</code></td><td>integer</td><td>Loan duration in days (default: 30)</td><td><span class="opt-badge">optional</span></td></tr>
+      </table>
+      <div class="code-tabs">
+        <div class="code-tab active" onclick="switchTab(this,'req-lc')">Request</div>
+        <div class="code-tab" onclick="switchTab(this,'res-lc')">Response 201</div>
+      </div>
+      <div id="req-lc" class="code-panel active"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button><span style="color:var(--post)">POST</span> /api/v1/loans
+{ <span class="json-key">"book_id"</span>: <span class="json-str">"b003"</span>, <span class="json-key">"member_id"</span>: <span class="json-str">"m001"</span>, <span class="json-key">"loan_days"</span>: <span class="json-num">14</span> }</pre></div>
+      <div id="res-lc" class="code-panel"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button">{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"id"</span>: <span class="json-str">"la9c0c695"</span>,
+    <span class="json-key">"book_id"</span>: <span class="json-str">"b003"</span>,
+    <span class="json-key">"member_id"</span>: <span class="json-str">"m001"</span>,
+    <span class="json-key">"loaned_at"</span>: <span class="json-str">"2026-02-20T15:32:21Z"</span>,
+    <span class="json-key">"due_at"</span>: <span class="json-str">"2026-03-06T15:32:21Z"</span>,
+    <span class="json-key">"returned_at"</span>: <span class="json-null">null</span>,
+    <span class="json-key">"status"</span>: <span class="json-str">"active"</span>
+  }
+}</pre></div>
+      <div class="responses">
+        <div class="resp-row"><span class="resp-code s2">201</span><span class="resp-desc">Loan created</span></div>
+        <div class="resp-row"><span class="resp-code s4">404</span><span class="resp-desc">BOOK_NOT_FOUND / MEMBER_NOT_FOUND</span></div>
+        <div class="resp-row"><span class="resp-code s4">409</span><span class="resp-desc">NO_COPIES_AVAILABLE / LOAN_LIMIT_REACHED</span></div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="endpoint" id="loans-return">
+    <div class="endpoint-header" onclick="toggle(this)"><span class="method-pill PATCH">PATCH</span><span class="endpoint-path">/loans/<span class="param">{id}</span>/return</span><span class="endpoint-summary">Return a book</span><span class="chevron">▶</span></div>
+    <div class="endpoint-body"><div class="endpoint-inner">
+      <p class="endpoint-desc">Mark a loan as returned. Automatically restores the book's available copy count and decrements the member's active loan count.</p>
+      <div class="code-tabs">
+        <div class="code-tab active" onclick="switchTab(this,'req-lr')">Request</div>
+        <div class="code-tab" onclick="switchTab(this,'res-lr')">Response 200</div>
+      </div>
+      <div id="req-lr" class="code-panel active"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button><span style="color:var(--patch)">PATCH</span> /api/v1/loans/l001/return</pre></div>
+      <div id="res-lr" class="code-panel"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button">{ <span class="json-key">"success"</span>: <span class="json-bool">true</span>, <span class="json-key">"data"</span>: { <span class="json-key">"status"</span>: <span class="json-str">"returned"</span>, <span class="json-key">"returned_at"</span>: <span class="json-str">"2026-02-20T..."</span> } }</pre></div>
+      <div class="responses">
+        <div class="resp-row"><span class="resp-code s2">200</span><span class="resp-desc">Loan marked as returned</span></div>
+        <div class="resp-row"><span class="resp-code s4">404</span><span class="resp-desc">LOAN_NOT_FOUND</span></div>
+        <div class="resp-row"><span class="resp-code s4">409</span><span class="resp-desc">ALREADY_RETURNED</span></div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="endpoint" id="loans-delete">
+    <div class="endpoint-header" onclick="toggle(this)"><span class="method-pill DELETE">DEL</span><span class="endpoint-path">/loans/<span class="param">{id}</span></span><span class="endpoint-summary">Delete a loan record</span><span class="chevron">▶</span></div>
+    <div class="endpoint-body"><div class="endpoint-inner">
+      <p class="endpoint-desc">Delete a loan record. Only allowed on returned loans.</p>
+      <div class="responses">
+        <div class="resp-row"><span class="resp-code s2">200</span><span class="resp-desc">Deletion confirmed</span></div>
+        <div class="resp-row"><span class="resp-code s4">409</span><span class="resp-desc">LOAN_ACTIVE — return book first</span></div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- ═══════════ UTILITIES ═══════════ -->
+  <div class="section-head"><h2>Utilities</h2><span class="section-tag">Extras</span></div>
+
+  <div class="endpoint" id="search">
+    <div class="endpoint-header" onclick="toggle(this)"><span class="method-pill GET">GET</span><span class="endpoint-path">/search?q=<span class="param">{query}</span></span><span class="endpoint-summary">Search books & members</span><span class="chevron">▶</span></div>
+    <div class="endpoint-body"><div class="endpoint-inner">
+      <p class="endpoint-desc">Full-text search across books (title, author, genre, ISBN) and members (name, email). Minimum 2 characters.</p>
+      <div class="code-tabs">
+        <div class="code-tab active" onclick="switchTab(this,'req-sr')">Request</div>
+        <div class="code-tab" onclick="switchTab(this,'res-sr')">Response 200</div>
+      </div>
+      <div id="req-sr" class="code-panel active"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button><span style="color:var(--get)">GET</span> /api/v1/search?q=gatsby</pre></div>
+      <div id="res-sr" class="code-panel"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button">{
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"query"</span>: <span class="json-str">"gatsby"</span>,
+    <span class="json-key">"books"</span>: [{ <span class="json-key">"title"</span>: <span class="json-str">"The Great Gatsby"</span>, ... }],
+    <span class="json-key">"members"</span>: [],
+    <span class="json-key">"counts"</span>: { <span class="json-key">"books"</span>: <span class="json-num">1</span>, <span class="json-key">"members"</span>: <span class="json-num">0</span> }
+  }
+}</pre></div>
+      <div class="responses"><div class="resp-row"><span class="resp-code s2">200</span><span class="resp-desc">Search results</span></div><div class="resp-row"><span class="resp-code s4">400</span><span class="resp-desc">QUERY_TOO_SHORT</span></div></div>
+    </div></div>
+  </div>
+
+  <div class="endpoint" id="stats">
+    <div class="endpoint-header" onclick="toggle(this)"><span class="method-pill GET">GET</span><span class="endpoint-path">/stats</span><span class="endpoint-summary">Library statistics</span><span class="chevron">▶</span></div>
+    <div class="endpoint-body"><div class="endpoint-inner">
+      <p class="endpoint-desc">Returns aggregate statistics for the entire library system — books by genre, active loans, overdue count, member breakdown.</p>
+      <div class="code-tabs">
+        <div class="code-tab active" onclick="switchTab(this,'req-st')">Request</div>
+        <div class="code-tab" onclick="switchTab(this,'res-st')">Response 200</div>
+      </div>
+      <div id="req-st" class="code-panel active"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button><span style="color:var(--get)">GET</span> /api/v1/stats</pre></div>
+      <div id="res-st" class="code-panel"><pre><button class="copy-btn" onclick="copyPre(this)">copy</button">{
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"books"</span>: { <span class="json-key">"total"</span>: <span class="json-num">4</span>, <span class="json-key">"available_copies"</span>: <span class="json-num">10</span>, <span class="json-key">"genres"</span>: { <span class="json-key">"Fiction"</span>: <span class="json-num">2</span> } },
+    <span class="json-key">"members"</span>: { <span class="json-key">"total"</span>: <span class="json-num">2</span>, <span class="json-key">"premium"</span>: <span class="json-num">1</span>, <span class="json-key">"standard"</span>: <span class="json-num">1</span> },
+    <span class="json-key">"loans"</span>: { <span class="json-key">"active"</span>: <span class="json-num">3</span>, <span class="json-key">"returned"</span>: <span class="json-num">0</span>, <span class="json-key">"overdue"</span>: <span class="json-num">2</span> }
+  }
+}</pre></div>
+      <div class="responses"><div class="resp-row"><span class="resp-code s2">200</span><span class="resp-desc">Stats object</span></div></div>
+    </div></div>
+  </div>
+
+  <div class="endpoint" id="health">
+    <div class="endpoint-header" onclick="toggle(this)"><span class="method-pill GET">GET</span><span class="endpoint-path">/health</span><span class="endpoint-summary">Health check</span><span class="chevron">▶</span></div>
+    <div class="endpoint-body"><div class="endpoint-inner">
+      <p class="endpoint-desc">Returns server health status and entity counts. Use for monitoring and uptime checks.</p>
+      <div class="responses"><div class="resp-row"><span class="resp-code s2">200</span><span class="resp-desc">Status: healthy</span></div></div>
+    </div></div>
+  </div>
+
+  <div style="height:4rem"></div>
+</main>
+<script src="script.js"></script>
+</body>
+</html>
