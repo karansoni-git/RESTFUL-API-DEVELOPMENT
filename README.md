@@ -20,3 +20,5 @@ The JavaScript layer enhances user interaction through smooth scrolling, active 
 Additional API endpoints such as health checks and statistics provide system insights, including total counts of books, members, loans, and active transactions. The project demonstrates strong backend fundamentals, RESTful API design, input validation, state management, and frontend UI engineering for technical documentation.
 
 Overall, this project showcases full-stack development capabilities by combining backend API architecture with an interactive documentation interface. It reflects best practices in API structure, error handling, user experience design, and scalable project organization, making it suitable for real-world backend service foundations.
+
+OUTPUT : ![img](https://github.com/user-attachments/assets/4ef8a199-14bc-4947-a902-23bf3d19f27b)
