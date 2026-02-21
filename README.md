@@ -1,11 +1,11 @@
 # RESTFUL-API-DEVELOPMENT
 
-COMPANY: CODTECH IT SOLUTIONS
-NAME: KARAN PAREKH
-INTERN ID: CTIS1913
-DOMAIN: SOFTWARE DEVELOPMENT
-DURATION: 6 WEEEKS
-MENTOR: MUZAMMIL AHMED
+#COMPANY: CODTECH IT SOLUTIONS
+#NAME: KARAN PAREKH
+#INTERN ID: CTIS1913
+#DOMAIN: SOFTWARE DEVELOPMENT
+#DURATION: 6 WEEEKS
+#MENTOR: MUZAMMIL AHMED
 
 DESCRIPTION : This project is a full-featured Library Management System built using Flask (Python) for the backend and a custom-designed HTML, CSS, and JavaScript interface for interactive API documentation. The system provides a RESTful API that enables efficient management of books, members, and loan transactions while maintaining clean architecture and structured responses.
 
